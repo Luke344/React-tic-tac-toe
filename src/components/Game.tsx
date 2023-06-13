@@ -1,36 +1,10 @@
 import React, {useState} from 'react'; // Imports react and useState from react.
-
-// StartScreen component. Takes in onStart function as a prop.
-function StartScreen({onStart}) { 
-    // Displays a title and a button. Clicking the button calls the onStart function.
-    return(
-        <div> 
-            <h1>Welcome to Luke's TicTacToe!</h1> 
-            <button onClick={onStart}>Click here to Start</button>
-        </div>
-    );
-} 
-
-// Grid component. Takes onClick function and board state as props.
-function Grid({onClick, board}) {
-    // Returns a flex container with a button for each cell in the board.
-    // Each button's text is the state of the cell (either 'X', 'O' or null).
-    // When a button is clicked, the onClick function is called with the cell's coordinates.
-    return (
-      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        {board.map((row, rowIndex) => (
-          <div key={rowIndex} style={{display: 'flex', flexDirection: 'row'}}> 
-            {row.map((cell, colIndex) => (
-              <button key={colIndex} style={{margin: '5px'}} onClick={() => onClick(rowIndex, colIndex)}>
-                {cell}
-              </button>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-}
-
+import StartScreen from './TicStartScreen';
+import Grid from './TicGrid';
+  
+// Array of all possible winning line coordinates.
+const winningLines = [[0, 0, 0, 1, 0, 2], [1, 0, 1, 1, 1, 2], [2, 0, 2, 1, 2, 2], [0, 0, 1, 0, 2, 0], [0, 1, 1, 1, 2, 1], [0, 2, 1, 2, 2, 2], [0, 0, 1, 1, 2, 2], [0, 2, 1, 1, 2, 0]];
+    
 // Main Game component.
 function Game() {
     // State variable for whether the game has started. Set with setGameStarted.
@@ -51,12 +25,11 @@ function Game() {
             setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
         }
     };
-
-    // Array of all possible winning line coordinates.
-    const winningLines = [[0, 0, 0, 1, 0, 2], [1, 0, 1, 1, 1, 2], [2, 0, 2, 1, 2, 2], [0, 0, 1, 0, 2, 0], [0, 1, 1, 1, 2, 1], [0, 2, 1, 2, 2, 2], [0, 0, 1, 1, 2, 2], [0, 2, 1, 1, 2, 0]];
     
     // Function to check if there's a winner.
-    const isWin = (board) => {
+    type Board = (string | null)[][];
+
+    const isWin = (board: Board): string | false => {
         // For each line in winningLines, if all cells in the line have the same mark and it's not null, returns that mark. Otherwise, returns false.
         for(let line of winningLines){
             if(board[line[0]][line[1]] === board[line[2]][line[3]] &&
